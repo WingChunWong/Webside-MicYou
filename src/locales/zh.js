@@ -1,0 +1,50 @@
+export default {
+    nav: {
+        features: "核心功能",
+        download: "获取应用",
+        about: "GitHub",
+        getStarted: "即刻体验"
+    },
+    hero: {
+        titleTop: "录音室级音质",
+        titleBottom: "随时随地 自由开麦",
+        subtitle: "让手机秒变专业麦克风，直播、游戏、录音从未如此简单 自研协议，无感延迟",
+        btnDownload: "立即下载",
+        btnLearnMore: "了解更多"
+    },
+    features: {
+        title: "为什么选择 MicYou",
+        subtitle: "专为创作者与极客打造的硬核功能",
+        latencyTitle: "极致低延迟",
+        latencyDesc: "搭载自研音频传输协议，实现真正的无感低延迟，游戏直播音画神同步",
+        qualityTitle: "录音室音质",
+        qualityDesc: "支持 48kHz 高采样率，人声清晰透亮，还原真实声线，媲美专业设备",
+        connectionTitle: "双模连接",
+        connectionDesc: "支持 Wi-Fi 无线自由连接，亦可选择 USB 有线模式，极度稳定抗干扰",
+        crossPlayTitle: "跨平台生态",
+        crossPlayDesc: "完美适配 Windows 与 Android 生态，iOS 版本敬请期待",
+        setupTitle: "即插即用",
+        setupDesc: "告别繁琐驱动设置，安装即用，电脑端自动识别为标准麦克风设备",
+        privacyTitle: "隐私安全",
+        privacyDesc: "音频数据仅在本地局域网传输，绝无云端上传，隐私安全有保障"
+    },
+    download: {
+        title: "下载 MicYou",
+        subtitle: "手机安装 App，电脑运行客户端，分秒间开启无线高音质体验",
+        winClient: "Windows 客户端",
+        winReq: "系统要求 Windows 10 及以上",
+        btnWinDownload: "下载 Windows 版",
+        loading: "获取最新版本...",
+        androidApp: "Android 应用",
+        androidReq: "系统要求 Android 8.0 及以上",
+        btnGithub: "访问 GitHub",
+        btnApk: "下载 APK 安装包",
+        bit64: "64 位"
+    },
+    footer: {
+        privacy: "隐私政策",
+        terms: "服务条款",
+        rights: "保留所有权利",
+        madeWith: "Designed by LanRhyme with ❤️"
+    }
+}

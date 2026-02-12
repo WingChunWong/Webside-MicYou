@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://micyou.netlify.app/sitemap.xml
