@@ -33,6 +33,7 @@ export default {
 		privacyDesc: "音频数据仅在本地局域网传输，绝无云端上传，隐私安全有保障",
 	},
 	download: {
+		recommended: "推荐下载",
 		title: "下载 MicYou",
 		subtitle: "手机安装 App，电脑运行客户端，分秒间开启无线高音质体验",
 		winClient: "Windows",

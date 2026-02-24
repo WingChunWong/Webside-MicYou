@@ -1,11 +1,10 @@
 <script setup>
-import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import FeatureCard from "./FeatureCard.vue";
 
 const { t } = useI18n();
 
-const features = computed(() => [
+const features = [
 	{
 		icon: "speed",
 		title: t("features.latencyTitle"),
@@ -36,7 +35,7 @@ const features = computed(() => [
 		title: t("features.privacyTitle"),
 		description: t("features.privacyDesc"),
 	},
-]);
+];
 </script>
 
 <template>

@@ -57,6 +57,14 @@ const componentTag = computed(() => (props.href ? "a" : "button"));
   font-size: 18px;
 }
 
+.md-button__label {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Filled Button */
 .md-button--filled {
   background-color: var(--md-sys-color-primary);

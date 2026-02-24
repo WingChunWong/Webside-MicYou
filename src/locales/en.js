@@ -37,6 +37,7 @@ export default {
 			"Your audio stream is processed locally. No cloud uploads, ensuring your privacy is always protected.",
 	},
 	download: {
+		recommended: "Recommended Download",
 		title: "Get Started with MicYou",
 		subtitle:
 			"Download the app on your phone and the client on your PC to start streaming high-quality audio.",

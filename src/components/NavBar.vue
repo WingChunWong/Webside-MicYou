@@ -33,7 +33,7 @@ onUnmounted(() => {
       </nav>
 
       <div class="navbar-actions">
-        <Button variant="filled" :label="$t('nav.getStarted')" href="#download" />
+        <Button class="navbar-button" variant="filled" :label="$t('nav.getStarted')" href="#download" />
         <LanguageSwitcher />
       </div>
     </div>
@@ -131,6 +131,9 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .navbar-links {
     display: none; /* Mobile menu needed later ideally */
+  }
+  .navbar-button {
+    transform: translateX(12px);
   }
 }
 </style>

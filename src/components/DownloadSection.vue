@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import Button from "./Button.vue";
+import { detectDevice } from "../utils/device";
 
 const { t } = useI18n();
 const AUR_COMMAND = "paru -S micyou-bin";
@@ -29,6 +30,7 @@ const dmgX64DownloadUrl = ref(
 const releaseVersion = ref("Latest");
 const isLoading = ref(true);
 const aurMessage = ref("");
+const recommendedPlatform = ref("unknown");
 
 const copyAurCommand = async () => {
 	try {
@@ -129,6 +131,14 @@ const fetchReleaseData = async () => {
 onMounted(() => {
 	fetchReleaseData();
 });
+
+onMounted(() => {
+	try {
+		recommendedPlatform.value = detectDevice();
+	} catch (e) {
+		recommendedPlatform.value = "unknown";
+	}
+});
 </script>
 
 <template>
@@ -141,7 +151,8 @@ onMounted(() => {
       
       <div class="download-grid">
         <!-- Windows Card -->
-        <div class="download-card">
+        <div :class="['download-card', { recommended: recommendedPlatform === 'windows' }]">
+          <div v-if="recommendedPlatform === 'windows'" class="badge">{{ $t('download.recommended') }}</div>
           <div class="platform-icon">
              <span class="material-symbols-rounded">desktop_windows</span>
           </div>
@@ -149,13 +160,13 @@ onMounted(() => {
           <p class="platform-desc">{{ $t('download.winReq') }}</p>
           <div class="store-buttons">
              <Button 
-               variant="filled" 
+               :variant="recommendedPlatform === 'windows' ? 'filled' : 'outlined'" 
                :label="isLoading ? $t('download.loading') : $t('download.btnWinDownload')" 
                icon="download" 
                :href="exeDownloadUrl" 
              />
              <Button 
-               variant="outlined" 
+               :variant="recommendedPlatform === 'windows' ? 'outlined' : 'outlined'" 
                :label="$t('download.btnWinZip')" 
                icon="download" 
                :href="zipDownloadUrl" 
@@ -165,42 +176,45 @@ onMounted(() => {
         </div>
 
         <!-- Android Card -->
-        <div class="download-card">
+        <div :class="['download-card', { recommended: recommendedPlatform === 'android' }]">
+          <div v-if="recommendedPlatform === 'android'" class="badge">{{ $t('download.recommended') }}</div>
           <div class="platform-icon">
              <span class="material-symbols-rounded">smartphone</span>
           </div>
           <h3 class="platform-name">{{ $t('download.androidApp') }}</h3>
           <p class="platform-desc">{{ $t('download.androidReq') }}</p>
           <div class="store-buttons">
-             <Button variant="filled" :label="$t('download.btnApk')" icon="android" :href="apkDownloadUrl" />
+             <Button :variant="recommendedPlatform === 'android' ? 'filled' : 'outlined'" :label="$t('download.btnApk')" icon="android" :href="apkDownloadUrl" />
           </div>
           <div class="version-info">{{ releaseVersion }}</div>
         </div>
 
           <!-- Mac Card -->
-          <div class="download-card">
+          <div :class="['download-card', { recommended: recommendedPlatform === 'mac_arm' || recommendedPlatform === 'mac_x64' }]">
+            <div v-if="recommendedPlatform === 'mac_arm' || recommendedPlatform === 'mac_x64'" class="badge">{{ $t('download.recommended') }}</div>
            <div class="platform-icon">
              <span class="material-symbols-rounded">laptop_mac</span>
            </div>
            <h3 class="platform-name">{{ $t('download.macClient') }}</h3>
            <p class="platform-desc">{{ $t('download.macReq') }}</p>
            <div class="store-buttons">
-             <Button variant="filled" :label="`macOS (Apple Silicon)`" icon="download" :href="dmgArmDownloadUrl" />
-             <Button variant="filled" :label="`macOS (Intel x64)`" icon="download" :href="dmgX64DownloadUrl" />
+             <Button :variant="recommendedPlatform === 'mac_arm' ? 'filled' : 'outlined'" :label="`macOS (Apple Silicon)`" icon="download" :href="dmgArmDownloadUrl" />
+             <Button :variant="recommendedPlatform === 'mac_x64' ? 'filled' : 'outlined'" :label="`macOS (Intel x64)`" icon="download" :href="dmgX64DownloadUrl" />
            </div>
            <div class="version-info">{{ releaseVersion }}</div>
           </div>
 
         <!-- Linux Card -->
-        <div class="download-card">
+        <div :class="['download-card', { recommended: recommendedPlatform === 'linux' }]">
+          <div v-if="recommendedPlatform === 'linux'" class="badge">{{ $t('download.recommended') }}</div>
           <div class="platform-icon">
              <span class="material-symbols-rounded">desktop_mac</span>
           </div>
           <h3 class="platform-name">{{ $t('download.linuxClient') }}</h3>
           <p class="platform-desc">{{ $t('download.linuxReq') }}</p>
           <div class="store-buttons">
-             <Button variant="filled" :label="$t('download.btnLinuxDebian')" icon="download" :href="debDownloadUrl" />
-             <Button variant="filled" :label="$t('download.btnLinuxRPM')" icon="download" :href="rpmDownloadUrl" />
+             <Button :variant="recommendedPlatform === 'linux' ? 'filled' : 'outlined'" :label="$t('download.btnLinuxDebian')" icon="download" :href="debDownloadUrl" />
+             <Button :variant="recommendedPlatform === 'linux' ? 'outlined' : 'outlined'" :label="$t('download.btnLinuxRPM')" icon="download" :href="rpmDownloadUrl" />
              <Button variant="outlined" :label="$t('download.btnLinuxAUR')" icon="content_copy" @click="copyAurCommand" />
              <div v-if="aurMessage" class="aur-message">{{ aurMessage }}</div>
           </div>
@@ -251,28 +265,57 @@ onMounted(() => {
 }
 
 .download-card {
-  background-color: var(--md-sys-color-surface-variant);
-  border-radius: 24px;
-  padding: 40px;
+  position: relative;
+  background: var(--md-sys-color-surface-variant);
+  border-radius: 12px; /* MD3 recommended */
+  padding: 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.04);
+  transition: transform 280ms cubic-bezier(.2,.9,.3,1), box-shadow 240ms ease;
+  backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: var(--md-sys-elevation-level1);
 }
 
 .download-card:hover {
   transform: translateY(-8px);
-  background-color: color-mix(in srgb, var(--md-sys-color-surface-variant), white 5%);
+  box-shadow: var(--md-sys-elevation-level2);
+}
+
+.download-card.recommended {
+  transform: none; /* 不默认抬起，保持与其他卡片一致 */
+  border: 1px solid rgba(63,123,255,0.12);
+  box-shadow: var(--md-sys-elevation-level2);
+  background: color-mix(in srgb, var(--md-sys-color-surface-variant), var(--md-sys-color-primary) 1%);
+}
+
+/* 推荐卡片在悬停时保持不抬起，仅保持微妙高亮 */
+.download-card.recommended:hover {
+  transform: translateY(-8px);
   box-shadow: var(--md-sys-elevation-level3);
 }
 
+.badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(32,64,128,0.12);
+  text-transform: none;
+}
+
 .platform-icon {
-  font-size: 48px;
+  font-size: 36px;
   color: var(--md-sys-color-primary);
-  margin-bottom: 24px;
-  width: 80px;
-  height: 80px;
+  margin-bottom: 20px;
+  width: 64px;
+  height: 64px;
   background-color: var(--md-sys-color-secondary-container);
   border-radius: 50%;
   display: flex;
@@ -297,6 +340,23 @@ onMounted(() => {
   flex-direction: column;
   gap: 12px;
   width: 100%;
+  align-items: stretch;
+}
+
+/* Larger screens: horizontal buttons */
+@media (min-width: 900px) {
+  .download-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .download-card .store-buttons {
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
+  }
+  .download-card .store-buttons > * {
+    flex: 1 1 auto;
+    max-width: none;
+  }
 }
 
 .aur-message {
