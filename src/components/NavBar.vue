@@ -1,21 +1,21 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import Button from './Button.vue'
-import LanguageSwitcher from './LanguageSwitcher.vue'
+import { ref, onMounted, onUnmounted } from "vue";
+import Button from "./Button.vue";
+import LanguageSwitcher from "./LanguageSwitcher.vue";
 
-const isScrolled = ref(false)
+const isScrolled = ref(false);
 
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 20
-}
+	isScrolled.value = window.scrollY > 20;
+};
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
+	window.addEventListener("scroll", handleScroll);
+});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+	window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <template>
@@ -33,7 +33,7 @@ onUnmounted(() => {
       </nav>
 
       <div class="navbar-actions">
-        <Button variant="filled" :label="$t('nav.getStarted')" href="#download" />
+        <Button class="navbar-button" variant="filled" :label="$t('nav.getStarted')" href="#download" />
         <LanguageSwitcher />
       </div>
     </div>
@@ -131,6 +131,9 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .navbar-links {
     display: none; /* Mobile menu needed later ideally */
+  }
+  .navbar-button {
+    transform: translateX(12px);
   }
 }
 </style>
