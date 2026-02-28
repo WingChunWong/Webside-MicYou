@@ -7,7 +7,9 @@ const contributors = ref([]);
 const loading = ref(true);
 const error = ref("");
 
-const fetchContributors = async () => {
+const AUTHORS = new Set(["LanRhyme", "ChinsaaWei"]);
+
+async function fetchContributors() {
 	loading.value = true;
 	error.value = "";
 	try {
@@ -16,31 +18,21 @@ const fetchContributors = async () => {
 		);
 		if (!res.ok) throw new Error(`HTTP ${res.status}`);
 		const data = await res.json();
-		if (!Array.isArray(data)) {
+		if (!Array.isArray(data))
 			throw new Error(t("contributors.unexpectedResponse"));
-		}
+
 		contributors.value = data
-			.filter(
-				(c) => c.type === "User" && !c.login.toLowerCase().includes("bot"),
-			)
+			.filter((c) => c.type === "User" && !/bot/i.test(c.login))
 			.sort((a, b) => b.contributions - a.contributions);
-	} catch (err) {
-		console.error("Failed to load contributors:", err);
+	} catch (e) {
+		console.error("Failed to load contributors:", e);
 		error.value = t("contributors.error");
 	} finally {
 		loading.value = false;
 	}
-};
+}
 
-const retry = () => {
-	fetchContributors();
-};
-
-onMounted(() => {
-	fetchContributors();
-});
-
-const isAuthor = (login) => ["LanRhyme", "ChinsaaWei"].includes(login);
+onMounted(fetchContributors);
 </script>
 
 <template>
@@ -49,21 +41,12 @@ const isAuthor = (login) => ["LanRhyme", "ChinsaaWei"].includes(login);
     <p class="subtitle">{{ t('contributors.subtitle') }}</p>
 
     <div v-if="loading" class="loading">{{ t('contributors.loading') }}</div>
-    <div v-else-if="error" class="error">{{ t('contributors.error') }}<button @click="retry" class="retry-btn">{{ t('contributors.retry') }}</button></div>
+    <div v-else-if="error" class="error">{{ error }}<button @click="fetchContributors" class="retry-btn">{{ t('contributors.retry') }}</button></div>
     <div v-else class="grid">
-      <a
-        v-for="c in contributors"
-        :key="c.id"
-        :href="c.html_url"
-        target="_blank"
-        rel="noopener"
-        class="card"
-      >
+      <a v-for="c in contributors" :key="c.id" :href="c.html_url" target="_blank" rel="noopener noreferrer" class="card">
         <img :src="c.avatar_url" :alt="c.login" class="avatar" />
         <div class="info">
-          <span class="name">{{ c.login }}
-            <span v-if="isAuthor(c.login)" class="author-badge">{{ t('contributors.authorBadge') }}</span>
-          </span>
+          <span class="name">{{ c.login }} <span v-if="AUTHORS.has(c.login)" class="author-badge">{{ t('contributors.authorBadge') }}</span></span>
           <span class="contribs">{{ c.contributions }} {{ t('contributors.contributions') }}</span>
         </div>
       </a>
