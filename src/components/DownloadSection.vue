@@ -152,9 +152,9 @@ onMounted(() => {
 	fetchReleaseData();
 });
 
-onMounted(() => {
+onMounted(async () => {
 	try {
-		recommendedPlatform.value = detectDevice();
+		recommendedPlatform.value = await detectDevice();
 	} catch (error) {
 		console.error("Error detecting device:", error);
 		recommendedPlatform.value = "unknown";
